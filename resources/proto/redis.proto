@@ -1,0 +1,20 @@
+package com.tiensonqin.redis;
+
+option java_generic_services = true;
+
+message RedisGetRequest {
+    required string key = 1;
+}
+
+message RedisSetRequest {
+    repeated string args = 1;
+}
+
+message RedisResponse {
+    repeated string result = 1;
+}
+
+service RedisService {
+    rpc Get(RedisGetRequest) returns (RedisResponse);
+    rpc Set(RedisSetRequest) returns (RedisResponse);
+}
