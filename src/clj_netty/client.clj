@@ -38,6 +38,27 @@
 (defn read! []
   (first (<!! (go (alts!! [read-ch (timeout 1000)])))))
 
+(def delimiter "$$")
+(def delimiter-regex #"\$\$")
+
+(defn join-dollar
+  [coll]
+  (clojure.string/join "$$" coll))
+
+(defn split-dollar
+  [string]
+  (if (not (nil? string))
+    (clojure.string/split string #"\$\$")))
+
+(defn sync-call
+  [service method args]
+  (write! (join-dollar (apply merge [service method] args)))
+  (read!))
+
+(defn async-call
+  [service method args]
+  (write! (join-dollar (apply merge [service method] args))))
+
 (defn client [host port]
   (go
     (loop [client (start-client host port)]
