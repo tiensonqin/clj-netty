@@ -9,7 +9,7 @@
            (io.netty.channel.socket.nio NioSocketChannel)
            (java.net InetSocketAddress)
            (io.netty.util CharsetUtil)
-           com.tiensonqin.redis.Redis$RedisGetRequest))
+           Rpc$Request))
 
 (defn- start-client [host port]
   (try
@@ -29,35 +29,25 @@
 (defn do-write
   [channel req]
   (when (.isOpen channel)
-    (.writeAndFlush channel (.. (com.tiensonqin.redis.Redis$RedisGetRequest/newBuilder) (setKey req) build))))
+    (.writeAndFlush channel req)))
 
 (defn write!
-  [req]
-  (go (>! write-ch req)))
+  [type service method args]
+  (let [req (.. (Rpc$Request/newBuilder)
+                (setType type)
+                (setService service)
+                (setMethod method)
+                (addArgs args)
+                build)]
+    (go (>! write-ch req))))
 
 (defn read! []
-  (first (<!! (go (alts!! [read-ch (timeout 1000)])))))
+  (when-let [msg (first (<!! (go (alts!! [read-ch (timeout 1000)]))))]
+    (.getResultList msg)))
 
-(def delimiter "$$")
-(def delimiter-regex #"\$\$")
-
-(defn join-dollar
-  [coll]
-  (clojure.string/join "$$" coll))
-
-(defn split-dollar
-  [string]
-  (if (not (nil? string))
-    (clojure.string/split string #"\$\$")))
-
-(defn sync-call
-  [service method args]
-  (write! (join-dollar (apply merge [service method] args)))
-  (read!))
-
-(defn async-call
-  [service method args]
-  (write! (join-dollar (apply merge [service method] args))))
+(defn call
+  [type service method args]
+  (write! type service method args))
 
 (defn client [host port]
   (go

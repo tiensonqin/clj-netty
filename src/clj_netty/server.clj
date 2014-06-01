@@ -18,6 +18,7 @@
             (localAddress (InetSocketAddress. port))
             (childHandler (server-channel-initializer server-handler))
             (option (ChannelOption/SO_BACKLOG) (int 128))
+            (option (ChannelOption/SO_REUSEADDR) true)
             (childOption (ChannelOption/SO_KEEPALIVE) true))
         (let [f (.. b bind sync)]
           (prn "Netty started and listen on " (.. f channel localAddress))

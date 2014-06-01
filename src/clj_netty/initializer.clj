@@ -5,8 +5,8 @@
                                             ProtobufVarint32FrameDecoder
                                             ProtobufVarint32LengthFieldPrepender)
            (io.netty.channel.socket SocketChannel)
-           com.tiensonqin.redis.Redis$RedisGetRequest
-           com.tiensonqin.redis.Redis$RedisResponse
+           Rpc$Request
+           Rpc$Response
            ))
 
 (defn ^ChannelInitializer server-channel-initializer [handler]
@@ -15,7 +15,7 @@
       (.. ch
           pipeline
           (addLast "frameDecoder" (ProtobufVarint32FrameDecoder.))
-          (addLast "protobufDecoder" (ProtobufDecoder. (com.tiensonqin.redis.Redis$RedisGetRequest/getDefaultInstance)))
+          (addLast "protobufDecoder" (ProtobufDecoder. (Rpc$Request/getDefaultInstance)))
           (addLast "frameEncoder" (ProtobufVarint32LengthFieldPrepender.))
           (addLast "protobufEncoder" (ProtobufEncoder.))
           (addLast "handler" (handler))))))
@@ -26,7 +26,7 @@
       (.. ch
           pipeline
           (addLast "frameDecoder" (ProtobufVarint32FrameDecoder.))
-          (addLast "protobufDecoder" (ProtobufDecoder. (com.tiensonqin.redis.Redis$RedisResponse/getDefaultInstance)))
+          (addLast "protobufDecoder" (ProtobufDecoder. (Rpc$Response/getDefaultInstance)))
           (addLast "frameEncoder" (ProtobufVarint32LengthFieldPrepender.))
           (addLast "protobufEncoder" (ProtobufEncoder.))
           (addLast "handler" (handler))))))

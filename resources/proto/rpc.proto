@@ -1,0 +1,11 @@
+message Request {
+    // 0 => sync, 1 => async
+    required int32 type = 1;
+    required string service = 2;
+    required string method = 3;
+    repeated string args = 4;
+}
+
+message Response {
+    repeated string result = 1;
+}
