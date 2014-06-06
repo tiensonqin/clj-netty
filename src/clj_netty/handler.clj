@@ -1,22 +1,26 @@
 (ns clj-netty.handler
-  (:require [clojure.core.async :refer [>!!]]
-            [clj-netty.channel :refer :all]
+  (:require [clj-netty.channel :refer :all]
+            [clojure.core.async :refer [>!!]]
             [clj-netty.services.redis])
   (:import (io.netty.channel ChannelFutureListener ChannelHandler
                              ChannelHandler$Sharable
                              ChannelHandlerContext
                              ChannelInboundHandlerAdapter
                              SimpleChannelInboundHandler)
-           (io.netty.util CharsetUtil)
-           Rpc$Request
-           Rpc$Response))
+           (java.util.concurrent TimeUnit)))
 
-;; TODO remove hard-coded namespace
+(defn- reconnect [ctx host port]
+  ((resolve 'clj-netty.isolate/reconnect) ctx host port))
+
 (defn invoke
   [service method args]
-  (apply (intern (symbol (str "clj-netty.services." service))
-                 (symbol method))
-         args))
+  (try
+    (apply (intern
+            (symbol (str "clj-netty.services." service))
+            (symbol method))
+           args)
+    (catch Exception e
+      (prn (.getMessage e)))))
 
 (defn ^ChannelHandler server-handler []
   (proxy [ChannelInboundHandlerAdapter ChannelHandler$Sharable] []
@@ -26,7 +30,8 @@
             service (.getService msg)
             method (.getMethod msg)
             args (.getArgsList msg)
-            result (invoke service method args)]
+            result (invoke service method args)
+            result (if (nil? result) "" result)]
         (when (zero? type)                ; sync call
           (.writeAndFlush ctx (.. (Rpc$Response/newBuilder) (addResult result) build)))))
     (channelReadComplete [^ChannelHandlerContext ctx]
@@ -45,7 +50,9 @@
     (channelRead0 [^ChannelHandlerContext ctx ^Object in]
       (prn "Client received: " in)
       (>!! read-ch in))
-
+    (channelInactive [^ChannelHandlerContext ctx]
+      ;; (reconnect ctx host port)
+      (reconnect ctx "localhost" 8080))
     (exceptionCaught [^ChannelHandlerContext ctx ^Throwable cause]
       (.printSTackTrace cause)
       (.close ctx))))
