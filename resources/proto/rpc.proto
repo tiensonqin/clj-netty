@@ -7,5 +7,23 @@ message Request {
 }
 
 message Response {
-    repeated string result = 1;
+    optional bytes result = 1;
+    optional ErrorCode error_code = 2;
+    optional string error_message = 3;
+}
+
+enum ErrorCode {
+    // Server-side errors
+    BAD_REQUEST_DATA = 0; // Server received bad request data
+    BAD_REQUEST_PROTO = 1; // Server received bad request proto
+    SERVICE_NOT_FOUND = 2; // Service not found on server
+    METHOD_NOT_FOUND = 3; // Method not found on server
+    RPC_ERROR = 4; // Rpc threw exception on server
+    RPC_FAILED = 5; // Rpc failed on server
+
+    // Client-side errors (these are returned by the client-side code)
+    INVALID_REQUEST_PROTO = 6; // Rpc was called with invalid request proto
+    BAD_RESPONSE_PROTO = 7; // Server returned a bad response proto
+    UNKNOWN_HOST = 8; // Could not find supplied host
+    IO_ERROR = 9; // I/O error while communicating with server
 }

@@ -5,7 +5,8 @@
             [clj-netty.handler :refer [client-handler]]
             [clj-netty.channel :refer :all]
             [clojure.core.async :refer [go chan >!! <!! <! >! alts!! timeout]]
-            [clojure.tools.nrepl :as handler])
+            [clojure.tools.nrepl :as handler]
+            [cheshire.core :refer [parse-string]])
   (:import (io.netty.bootstrap Bootstrap)
            (io.netty.channel ChannelOption)
            (io.netty.channel.nio NioEventLoopGroup)
@@ -32,7 +33,7 @@
 
 (defn read! []
   (when-let [msg (first (<!! (go (alts!! [read-ch (timeout 300)]))))]
-    (.getResultList msg)))
+    (parse-string (.toStringUtf8 (.getResult msg)))))
 
 (defn sync
   [service method args]

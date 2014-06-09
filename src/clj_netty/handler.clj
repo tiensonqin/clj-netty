@@ -1,13 +1,15 @@
 (ns clj-netty.handler
   (:require [clj-netty.channel :refer :all]
             [clojure.core.async :refer [>!!]]
-            [clj-netty.services.redis])
+            [clj-netty.services.redis]
+            [cheshire.core :refer [generate-string]])
   (:import (io.netty.channel ChannelFutureListener ChannelHandler
                              ChannelHandler$Sharable
                              ChannelHandlerContext
                              ChannelInboundHandlerAdapter
                              SimpleChannelInboundHandler)
-           (java.util.concurrent TimeUnit)))
+           (java.util.concurrent TimeUnit)
+           (com.google.protobuf ByteString)))
 
 (defn- reconnect [ctx host port]
   ((resolve 'clj-netty.isolate/reconnect) ctx host port))
@@ -33,7 +35,7 @@
             result (invoke service method args)
             result (if (nil? result) "" result)]
         (when (zero? type)                ; sync call
-          (.writeAndFlush ctx (.. (Rpc$Response/newBuilder) (addResult result) build)))))
+          (.writeAndFlush ctx (.. (Rpc$Response/newBuilder) (setResult (ByteString/copyFromUtf8 (generate-string result))) build)))))
     (channelReadComplete [^ChannelHandlerContext ctx]
       ;; (.. ctx
       ;;     (writeAndFlush Unpooled/EMPTY_BUFFER)
