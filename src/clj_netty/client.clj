@@ -1,4 +1,5 @@
 (ns clj-netty.client
+  (:refer-clojure :exclude [sync])
   (:require [clj-netty.initializer :refer [client-channel-initializer]]
             [clj-netty.isolate :refer :all]
             [clj-netty.handler :refer [client-handler]]
@@ -30,8 +31,17 @@
     (go (>! write-ch req))))
 
 (defn read! []
-  (when-let [msg (first (<!! (go (alts!! [read-ch (timeout 1000)]))))]
+  (when-let [msg (first (<!! (go (alts!! [read-ch (timeout 300)]))))]
     (.getResultList msg)))
+
+(defn sync
+  [service method args]
+  (write! 0 service method args)
+  (read!))
+
+(defn async
+  [service method args]
+  (write! 1 service method args))
 
 (defn connect [host port]
   (let [c (start-client host port)]
@@ -41,9 +51,3 @@
           (let [req (<! write-ch)]
             (do-write (.channel @client) req)))
         (recur)))))
-
-;; sync && async invoke
-;; (defn sync-call
-;;   [service method args]
-;;   (let [req (build-msg 0 service method args)]
-;;     ))

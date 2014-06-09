@@ -29,7 +29,7 @@
     ChannelFutureListener
     (operationComplete [this f]
       (when (not (.isSuccess f))
-        (prn "Reconnect")
+        ;; (prn "Reconnect")
         (reconnect f host port)))))
 
 (defn start-client

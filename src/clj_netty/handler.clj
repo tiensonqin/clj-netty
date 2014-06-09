@@ -25,7 +25,7 @@
 (defn ^ChannelHandler server-handler []
   (proxy [ChannelInboundHandlerAdapter ChannelHandler$Sharable] []
     (channelRead [^ChannelHandlerContext ctx ^Object msg]
-      (prn "Server received: " msg)
+      ;; (prn "Server received: " msg)
       (let [type (.getType msg)
             service (.getService msg)
             method (.getMethod msg)
@@ -48,7 +48,7 @@
     (channelActive [^ChannelHandlerContext ctx])
 
     (channelRead0 [^ChannelHandlerContext ctx ^Object in]
-      (prn "Client received: " in)
+      ;; (prn "Client received: " in)
       (>!! read-ch in))
     (channelInactive [^ChannelHandlerContext ctx]
       ;; (reconnect ctx host port)
