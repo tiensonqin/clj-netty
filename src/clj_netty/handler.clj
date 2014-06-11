@@ -56,5 +56,5 @@
       ;; (reconnect ctx host port)
       (reconnect ctx "localhost" 8080))
     (exceptionCaught [^ChannelHandlerContext ctx ^Throwable cause]
-      (.printSTackTrace cause)
+      (.printStackTrace cause)
       (.close ctx))))

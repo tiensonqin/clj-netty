@@ -1,20 +1,24 @@
 (ns clj-netty.services.redis
   (:refer-clojure :exclude [get set])
   (:require [com.netflix.hystrix.core :refer [defcommand]]
-            [taoensso.carmine :as car :refer (wcar)]))
+            [taoensso.carmine :as car :refer (wcar)]
+            [clj-netty.service :refer [instance]]))
 
-(def server1-conn {:pool {}
-                   :spec {:host "127.0.0.1"
-                          :port 6379}})
+(defonce service-name "redis")
 
-(defmacro wcar* [conn & body] `(car/wcar '~conn ~@body))
+(defn conn
+  []
+  (let [parts (clojure.string/split (.buildUriSpec (instance service-name)) #":")]
+    {:pool {}
+     :spec {:host (clojure.string/replace (second parts) "//" "")
+            :port (read-string (last parts))}}))
+
+(defmacro wcar* [& body] `(car/wcar ~(conn) ~@body))
 
 (defcommand get
   [key]
-  (wcar* server1-conn
-         (car/get key)))
+  (wcar* (car/get key)))
 
 (defcommand set
   [& key-val]
-  (wcar* server1-conn
-         (apply car/set key-val)))
+  (wcar* (apply car/set key-val)))
