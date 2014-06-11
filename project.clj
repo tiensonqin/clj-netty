@@ -10,9 +10,9 @@
                  [com.netflix.hystrix/hystrix-clj "1.4.0-RC4"]
                  [org.flatland/protobuf "0.8.1"]
                  [com.taoensso/carmine "2.6.0"]
-                 [cheshire "5.3.1"]
-                 [curator "0.0.2"]]
+                 [cheshire "5.3.1"]]
   :plugins [[lein-protobuf "0.4.1"]]
   :java-source-paths ["src/jvm"]
   :main clj-netty.core
-  :aot [clj-netty.core])
+  :aot [clj-netty.core]
+  :resource-paths ["/home/tienson/codes/clojure/curator/target/curator-0.0.2-standalone.jar"])

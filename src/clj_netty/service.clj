@@ -12,7 +12,7 @@
                             (.start c)
                             c))
 
-(defonce ^:private discovery (let [d (service-discovery client (service-instance "redis" "tcp://127.0.0.1:6379" 6379) :base-path "/huaban")]
+(defonce ^:private discovery (let [d (service-discovery client :base-path "/huaban")]
                                (.start d)
                                d))
 
