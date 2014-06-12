@@ -1,7 +1,6 @@
 (ns clj-netty.handler
   (:require [clj-netty.channel :refer :all]
             [clojure.core.async :refer [>!!]]
-            [clj-netty.services.redis]
             [cheshire.core :refer [generate-string]])
   (:import (io.netty.channel ChannelFutureListener ChannelHandler
                              ChannelHandler$Sharable
@@ -14,17 +13,18 @@
 (defn- reconnect [ctx host port]
   ((resolve 'clj-netty.isolate/reconnect) ctx host port))
 
-(defn invoke
-  [service method args]
-  (try
-    (apply (intern
-            (symbol (str "clj-netty.services." service))
-            (symbol method))
-           args)
-    (catch Exception e
-      (prn (.getMessage e)))))
+;; (defn invoke
+;;   [service method args]
+;;   (try
+;;     (apply (intern
+;;             (symbol (str "clj-netty.services." service))
+;;             (symbol method))
+;;            args)
+;;     (catch Exception e
+;;       (prn (.getMessage e)))))
 
-(defn ^ChannelHandler server-handler []
+(defn ^ChannelHandler server-handler
+  [custom-handler]
   (proxy [ChannelInboundHandlerAdapter ChannelHandler$Sharable] []
     (channelRead [^ChannelHandlerContext ctx ^Object msg]
       ;; (prn "Server received: " msg)
@@ -32,7 +32,7 @@
             service (.getService msg)
             method (.getMethod msg)
             args (.getArgsList msg)
-            result (invoke service method args)
+            result (custom-handler service method args)
             result (if (nil? result) "" result)]
         (when (zero? type)                ; sync call
           (.writeAndFlush ctx (.. (Rpc$Response/newBuilder) (setResult (ByteString/copyFromUtf8 (generate-string result))) build)))))
@@ -45,7 +45,7 @@
       (.printStackTrace cause)
       (.close ctx))))
 
-(defn ^ChannelHandler client-handler []
+(defn ^ChannelHandler client-handler [host port]
   (proxy [SimpleChannelInboundHandler ChannelHandler$Sharable] []
     (channelActive [^ChannelHandlerContext ctx])
 
@@ -54,7 +54,7 @@
       (>!! read-ch in))
     (channelInactive [^ChannelHandlerContext ctx]
       ;; (reconnect ctx host port)
-      (reconnect ctx "localhost" 8080))
+      (reconnect ctx host port))
     (exceptionCaught [^ChannelHandlerContext ctx ^Throwable cause]
       (.printSTackTrace cause)
       (.close ctx))))

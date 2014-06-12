@@ -7,7 +7,7 @@
            (io.netty.channel.socket.nio NioServerSocketChannel)
            (java.net InetSocketAddress)))
 
-(defn start-server [port]
+(defn start [port custom-handler]
   (let [boss-group (NioEventLoopGroup.)
         worker-group (NioEventLoopGroup.)]
     (try
@@ -16,7 +16,7 @@
             (group boss-group worker-group)
             (channel NioServerSocketChannel)
             (localAddress (InetSocketAddress. port))
-            (childHandler (server-channel-initializer server-handler))
+            (childHandler (server-channel-initializer (server-handler custom-handler)))
             (option (ChannelOption/SO_BACKLOG) (int 128))
             (option (ChannelOption/SO_REUSEADDR) true)
             (childOption (ChannelOption/SO_KEEPALIVE) true))

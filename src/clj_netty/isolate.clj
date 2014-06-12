@@ -39,7 +39,7 @@
                 (group (NioEventLoopGroup.))
                 (channel NioSocketChannel)
                 (remoteAddress (InetSocketAddress. host port))
-                (handler (client-channel-initializer client-handler))
+                (handler (client-channel-initializer (client-handler host port)))
                 (option (ChannelOption/SO_KEEPALIVE) true)
                 connect
                 (addListener (reconnect-listener host port))

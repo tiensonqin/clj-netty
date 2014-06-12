@@ -18,7 +18,7 @@
           (addLast "protobufDecoder" (ProtobufDecoder. (Rpc$Request/getDefaultInstance)))
           (addLast "frameEncoder" (ProtobufVarint32LengthFieldPrepender.))
           (addLast "protobufEncoder" (ProtobufEncoder.))
-          (addLast "handler" (handler))))))
+          (addLast "handler" handler)))))
 
 (defn ^ChannelInitializer client-channel-initializer [handler]
   (proxy [ChannelInitializer] []
@@ -29,4 +29,4 @@
           (addLast "protobufDecoder" (ProtobufDecoder. (Rpc$Response/getDefaultInstance)))
           (addLast "frameEncoder" (ProtobufVarint32LengthFieldPrepender.))
           (addLast "protobufEncoder" (ProtobufEncoder.))
-          (addLast "handler" (handler))))))
+          (addLast "handler" handler)))))

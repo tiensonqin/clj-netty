@@ -1,17 +1,14 @@
 (defproject clj-netty "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Clojure rpc based on netty and core.async"
+  :url "http://github.com/tiensonqin/clj-netty"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [
-                 [org.clojure/clojure "1.6.0"]
+  :dependencies [[org.clojure/clojure "1.6.0"]
                  [io.netty/netty-all "4.0.19.Final"]
                  [org.clojure/core.async "0.1.303.0-886421-alpha"]
-                 [com.netflix.hystrix/hystrix-clj "1.4.0-RC4"]
-                 [org.flatland/protobuf "0.8.1"]
-                 [com.taoensso/carmine "2.6.0"]
-                 [cheshire "5.3.1"]]
-  :plugins [[lein-protobuf "0.4.1"]]
-  :java-source-paths ["src/jvm"]
+                 [cheshire "5.3.1"]
+                 [com.google.protobuf/protobuf-java "2.5.0"]]
+  ;; :plugins [[lein-protobuf "0.4.1"]]
   :main clj-netty.core
-  :aot [clj-netty.core])
+  :aot [clj-netty.core]
+  :java-source-paths ["src/jvm"])

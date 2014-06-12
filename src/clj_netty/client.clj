@@ -35,12 +35,12 @@
   (when-let [msg (first (<!! (go (alts!! [read-ch (timeout 300)]))))]
     (parse-string (.toStringUtf8 (.getResult msg)))))
 
-(defn sync
+(defn sync-call
   [service method args]
   (write! 0 service method args)
   (read!))
 
-(defn async
+(defn async-call
   [service method args]
   (write! 1 service method args))
 
