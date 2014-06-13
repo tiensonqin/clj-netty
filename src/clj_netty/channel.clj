@@ -23,6 +23,4 @@
   (FixedBuffer. (LinkedList.) n))
 
 (def read-buf (fixed-buffer 128))
-(def write-buf (fixed-buffer 128))
 (def read-ch (chan read-buf))
-(def write-ch (chan write-buf))

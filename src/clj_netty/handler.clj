@@ -1,7 +1,7 @@
 (ns clj-netty.handler
   (:require [clj-netty.channel :refer :all]
             [clojure.core.async :refer [>!!]]
-            [cheshire.core :refer [generate-string]])
+            [cheshire.core :refer [generate-string parse-string]])
   (:import (io.netty.channel ChannelFutureListener ChannelHandler
                              ChannelHandler$Sharable
                              ChannelHandlerContext
@@ -13,16 +13,7 @@
 (defn- reconnect [ctx host port]
   ((resolve 'clj-netty.isolate/reconnect) ctx host port))
 
-;; (defn invoke
-;;   [service method args]
-;;   (try
-;;     (apply (intern
-;;             (symbol (str "clj-netty.services." service))
-;;             (symbol method))
-;;            args)
-;;     (catch Exception e
-;;       (prn (.getMessage e)))))
-
+;; TODO fixed issue of non sharable
 (defn ^ChannelHandler server-handler
   [custom-handler]
   (proxy [ChannelInboundHandlerAdapter ChannelHandler$Sharable] []
@@ -31,9 +22,9 @@
       (let [type (.getType msg)
             service (.getService msg)
             method (.getMethod msg)
-            args (.getArgsList msg)
-            result (custom-handler service method args)
-            result (if (nil? result) "" result)]
+            args (parse-string (.toStringUtf8 (.getArgs msg)))
+            result (custom-handler service method args)]
+        (prn args)
         (when (zero? type)                ; sync call
           (.writeAndFlush ctx (.. (Rpc$Response/newBuilder) (setResult (ByteString/copyFromUtf8 (generate-string result))) build)))))
     (channelReadComplete [^ChannelHandlerContext ctx]

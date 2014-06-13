@@ -3,7 +3,7 @@ message Request {
     required int32 type = 1;
     required string service = 2;
     required string method = 3;
-    repeated string args = 4;
+    optional bytes args = 4;
 }
 
 message Response {

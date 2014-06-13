@@ -8,7 +8,7 @@
                  [org.clojure/core.async "0.1.303.0-886421-alpha"]
                  [cheshire "5.3.1"]
                  [com.google.protobuf/protobuf-java "2.5.0"]]
-  ;; :plugins [[lein-protobuf "0.4.1"]]
+  :plugins [[lein-protobuf "0.4.1"]]
   :main clj-netty.core
   :aot [clj-netty.core]
   :java-source-paths ["src/jvm"])

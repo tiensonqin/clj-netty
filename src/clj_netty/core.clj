@@ -12,9 +12,9 @@
   (connect host port))
 
 (defn sync
-  [service method args]
-  (sync-call service method args))
+  [channel service method args]
+  (sync-call channel service method args))
 
 (defn async
-  [service method args]
-  (async-call service method args))
+  [channel service method args]
+  (async-call channel service method args))

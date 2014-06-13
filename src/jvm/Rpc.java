@@ -291,25 +291,15 @@ public final class Rpc {
     com.google.protobuf.ByteString
         getMethodBytes();
 
-    // repeated string args = 4;
+    // optional bytes args = 4;
     /**
-     * <code>repeated string args = 4;</code>
+     * <code>optional bytes args = 4;</code>
      */
-    java.util.List<java.lang.String>
-    getArgsList();
+    boolean hasArgs();
     /**
-     * <code>repeated string args = 4;</code>
+     * <code>optional bytes args = 4;</code>
      */
-    int getArgsCount();
-    /**
-     * <code>repeated string args = 4;</code>
-     */
-    java.lang.String getArgs(int index);
-    /**
-     * <code>repeated string args = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getArgsBytes(int index);
+    com.google.protobuf.ByteString getArgs();
   }
   /**
    * Protobuf type {@code Request}
@@ -378,11 +368,8 @@ public final class Rpc {
               break;
             }
             case 34: {
-              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-                args_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00000008;
-              }
-              args_.add(input.readBytes());
+              bitField0_ |= 0x00000008;
+              args_ = input.readBytes();
               break;
             }
           }
@@ -393,9 +380,6 @@ public final class Rpc {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-          args_ = new com.google.protobuf.UnmodifiableLazyStringList(args_);
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -538,41 +522,27 @@ public final class Rpc {
       }
     }
 
-    // repeated string args = 4;
+    // optional bytes args = 4;
     public static final int ARGS_FIELD_NUMBER = 4;
-    private com.google.protobuf.LazyStringList args_;
+    private com.google.protobuf.ByteString args_;
     /**
-     * <code>repeated string args = 4;</code>
+     * <code>optional bytes args = 4;</code>
      */
-    public java.util.List<java.lang.String>
-        getArgsList() {
+    public boolean hasArgs() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional bytes args = 4;</code>
+     */
+    public com.google.protobuf.ByteString getArgs() {
       return args_;
-    }
-    /**
-     * <code>repeated string args = 4;</code>
-     */
-    public int getArgsCount() {
-      return args_.size();
-    }
-    /**
-     * <code>repeated string args = 4;</code>
-     */
-    public java.lang.String getArgs(int index) {
-      return args_.get(index);
-    }
-    /**
-     * <code>repeated string args = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getArgsBytes(int index) {
-      return args_.getByteString(index);
     }
 
     private void initFields() {
       type_ = 0;
       service_ = "";
       method_ = "";
-      args_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      args_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -607,8 +577,8 @@ public final class Rpc {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBytes(3, getMethodBytes());
       }
-      for (int i = 0; i < args_.size(); i++) {
-        output.writeBytes(4, args_.getByteString(i));
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, args_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -631,14 +601,9 @@ public final class Rpc {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(3, getMethodBytes());
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < args_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(args_.getByteString(i));
-        }
-        size += dataSize;
-        size += 1 * getArgsList().size();
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, args_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -762,7 +727,7 @@ public final class Rpc {
         bitField0_ = (bitField0_ & ~0x00000002);
         method_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
-        args_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        args_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
@@ -804,10 +769,8 @@ public final class Rpc {
           to_bitField0_ |= 0x00000004;
         }
         result.method_ = method_;
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          args_ = new com.google.protobuf.UnmodifiableLazyStringList(
-              args_);
-          bitField0_ = (bitField0_ & ~0x00000008);
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
         }
         result.args_ = args_;
         result.bitField0_ = to_bitField0_;
@@ -839,15 +802,8 @@ public final class Rpc {
           method_ = other.method_;
           onChanged();
         }
-        if (!other.args_.isEmpty()) {
-          if (args_.isEmpty()) {
-            args_ = other.args_;
-            bitField0_ = (bitField0_ & ~0x00000008);
-          } else {
-            ensureArgsIsMutable();
-            args_.addAll(other.args_);
-          }
-          onChanged();
+        if (other.hasArgs()) {
+          setArgs(other.getArgs());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1085,95 +1041,38 @@ public final class Rpc {
         return this;
       }
 
-      // repeated string args = 4;
-      private com.google.protobuf.LazyStringList args_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureArgsIsMutable() {
-        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
-          args_ = new com.google.protobuf.LazyStringArrayList(args_);
-          bitField0_ |= 0x00000008;
-         }
+      // optional bytes args = 4;
+      private com.google.protobuf.ByteString args_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes args = 4;</code>
+       */
+      public boolean hasArgs() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>repeated string args = 4;</code>
+       * <code>optional bytes args = 4;</code>
        */
-      public java.util.List<java.lang.String>
-          getArgsList() {
-        return java.util.Collections.unmodifiableList(args_);
+      public com.google.protobuf.ByteString getArgs() {
+        return args_;
       }
       /**
-       * <code>repeated string args = 4;</code>
+       * <code>optional bytes args = 4;</code>
        */
-      public int getArgsCount() {
-        return args_.size();
-      }
-      /**
-       * <code>repeated string args = 4;</code>
-       */
-      public java.lang.String getArgs(int index) {
-        return args_.get(index);
-      }
-      /**
-       * <code>repeated string args = 4;</code>
-       */
-      public com.google.protobuf.ByteString
-          getArgsBytes(int index) {
-        return args_.getByteString(index);
-      }
-      /**
-       * <code>repeated string args = 4;</code>
-       */
-      public Builder setArgs(
-          int index, java.lang.String value) {
+      public Builder setArgs(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureArgsIsMutable();
-        args_.set(index, value);
+  bitField0_ |= 0x00000008;
+        args_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string args = 4;</code>
-       */
-      public Builder addArgs(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureArgsIsMutable();
-        args_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string args = 4;</code>
-       */
-      public Builder addAllArgs(
-          java.lang.Iterable<java.lang.String> values) {
-        ensureArgsIsMutable();
-        super.addAll(values, args_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string args = 4;</code>
+       * <code>optional bytes args = 4;</code>
        */
       public Builder clearArgs() {
-        args_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000008);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string args = 4;</code>
-       */
-      public Builder addArgsBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureArgsIsMutable();
-        args_.add(value);
+        args_ = getDefaultInstance().getArgs();
         onChanged();
         return this;
       }
@@ -1855,7 +1754,7 @@ public final class Rpc {
     java.lang.String[] descriptorData = {
       "\n\trpc.proto\"F\n\007Request\022\014\n\004type\030\001 \002(\005\022\017\n\007" +
       "service\030\002 \002(\t\022\016\n\006method\030\003 \002(\t\022\014\n\004args\030\004 " +
-      "\003(\t\"Q\n\010Response\022\016\n\006result\030\001 \001(\014\022\036\n\nerror" +
+      "\001(\014\"Q\n\010Response\022\016\n\006result\030\001 \001(\014\022\036\n\nerror" +
       "_code\030\002 \001(\0162\n.ErrorCode\022\025\n\rerror_message" +
       "\030\003 \001(\t*\327\001\n\tErrorCode\022\024\n\020BAD_REQUEST_DATA" +
       "\020\000\022\025\n\021BAD_REQUEST_PROTO\020\001\022\025\n\021SERVICE_NOT" +

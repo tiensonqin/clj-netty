@@ -8,8 +8,6 @@
            (java.net InetSocketAddress)
            (java.util.concurrent TimeUnit)))
 
-(def client (atom nil))
-
 (declare start-client)
 
 (defn reconnect
@@ -35,17 +33,14 @@
 (defn start-client
   [host port]
   (try
-    (let [c (.. (Bootstrap.)
-                (group (NioEventLoopGroup.))
-                (channel NioSocketChannel)
-                (remoteAddress (InetSocketAddress. host port))
-                (handler (client-channel-initializer (client-handler host port)))
-                (option (ChannelOption/SO_KEEPALIVE) true)
-                connect
-                (addListener (reconnect-listener host port))
-                )]
-      (reset! client c)
-      c)
+    (.. (Bootstrap.)
+        (group (NioEventLoopGroup.))
+        (channel NioSocketChannel)
+        (remoteAddress (InetSocketAddress. host port))
+        (handler (client-channel-initializer (client-handler host port)))
+        (option (ChannelOption/SO_KEEPALIVE) true)
+        connect
+        (addListener (reconnect-listener host port)))
     ;; (finally
     ;;   (.. group shutdownGracefully sync))
     (catch Exception e

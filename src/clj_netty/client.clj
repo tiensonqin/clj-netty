@@ -6,16 +6,18 @@
             [clj-netty.channel :refer :all]
             [clojure.core.async :refer [go chan >!! <!! <! >! alts!! timeout]]
             [clojure.tools.nrepl :as handler]
-            [cheshire.core :refer [parse-string]])
+            [cheshire.core :refer [parse-string generate-string]])
   (:import (io.netty.bootstrap Bootstrap)
            (io.netty.channel ChannelOption)
            (io.netty.channel.nio NioEventLoopGroup)
            (io.netty.channel.socket.nio NioSocketChannel)
-           (java.net InetSocketAddress)))
+           (java.net InetSocketAddress)
+           (com.google.protobuf ByteString)))
 
 (defn do-write
   [channel req]
-  (.writeAndFlush channel req))
+  (when (.isActive channel)
+    (.writeAndFlush channel req)))
 
 (defn build-msg
   [type service method args]
@@ -23,32 +25,27 @@
       (setType type)
       (setService service)
       (setMethod method)
-      (addAllArgs args)
+      (setArgs (ByteString/copyFromUtf8 (generate-string args)))
       build))
 
 (defn write!
-  [type service method args]
+  [channel type service method args]
   (let [req (build-msg type service method args)]
-    (go (>! write-ch req))))
+    (do-write channel req)))
 
 (defn read! []
   (when-let [msg (first (<!! (go (alts!! [read-ch (timeout 300)]))))]
     (parse-string (.toStringUtf8 (.getResult msg)))))
 
 (defn sync-call
-  [service method args]
-  (write! 0 service method args)
+  [channel service method args]
+  (write! channel 0 service method args)
   (read!))
 
 (defn async-call
-  [service method args]
-  (write! 1 service method args))
+  [channel service method args]
+  (write! channel 1 service method args)
+  nil)
 
 (defn connect [host port]
-  (let [c (start-client host port)]
-    (go
-      (loop []
-        (when (.isActive (.channel @client))
-          (let [req (<! write-ch)]
-            (do-write (.channel @client) req)))
-        (recur)))))
+  (.channel (start-client host port)))
