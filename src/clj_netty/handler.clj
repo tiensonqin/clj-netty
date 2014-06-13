@@ -1,7 +1,8 @@
 (ns clj-netty.handler
   (:require [clj-netty.channel :refer :all]
             [clojure.core.async :refer [>!!]]
-            [cheshire.core :refer [generate-string parse-string]])
+            [cheshire.core :refer [generate-string parse-string]]
+            [com.netflix.hystrix.core :refer [defcommand]])
   (:import (io.netty.channel ChannelFutureListener ChannelHandler
                              ChannelHandler$Sharable
                              ChannelHandlerContext
