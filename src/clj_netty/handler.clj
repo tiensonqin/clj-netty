@@ -16,7 +16,7 @@
 ;; TODO fixed issue of non sharable
 (defn ^ChannelHandler server-handler
   [custom-handler]
-  (proxy [ChannelInboundHandlerAdapter ChannelHandler$Sharable] []
+  (proxy [ChannelInboundHandlerAdapter] []
     (channelRead [^ChannelHandlerContext ctx ^Object msg]
       ;; (prn "Server received: " msg)
       (let [type (.getType msg)
@@ -24,7 +24,6 @@
             method (.getMethod msg)
             args (parse-string (.toStringUtf8 (.getArgs msg)))
             result (custom-handler service method args)]
-        (prn args)
         (when (zero? type)                ; sync call
           (.writeAndFlush ctx (.. (Rpc$Response/newBuilder) (setResult (ByteString/copyFromUtf8 (generate-string result))) build)))))
     (channelReadComplete [^ChannelHandlerContext ctx]
@@ -34,10 +33,11 @@
       )
     (exceptionCaught [^ChannelHandlerContext ctx ^Throwable cause]
       (.printStackTrace cause)
-      (.close ctx))))
+      (.close ctx))
+    (isSharable [] true)))
 
 (defn ^ChannelHandler client-handler [host port]
-  (proxy [SimpleChannelInboundHandler ChannelHandler$Sharable] []
+  (proxy [SimpleChannelInboundHandler] []
     (channelActive [^ChannelHandlerContext ctx])
 
     (channelRead0 [^ChannelHandlerContext ctx ^Object in]
@@ -48,4 +48,5 @@
       (reconnect ctx host port))
     (exceptionCaught [^ChannelHandlerContext ctx ^Throwable cause]
       (.printSTackTrace cause)
-      (.close ctx))))
+      (.close ctx))
+    (isSharable [] true)))
