@@ -1,8 +1,7 @@
 (ns clj-netty.handler
   (:require [clj-netty.channel :refer :all]
             [clojure.core.async :refer [>!!]]
-            [cheshire.core :refer [generate-string parse-string]]
-            [com.netflix.hystrix.core :refer [defcommand]])
+            [cheshire.core :refer [generate-string parse-string]])
   (:import (io.netty.channel ChannelFutureListener ChannelHandler
                              ChannelHandler$Sharable
                              ChannelHandlerContext
@@ -43,11 +42,11 @@
 
     (channelRead0 [^ChannelHandlerContext ctx ^Object in]
       ;; (prn "Client received: " in)
-      (>!! read-ch in))
-    (channelInactive [^ChannelHandlerContext ctx]
-      ;; (reconnect ctx host port)
-      (reconnect ctx host port))
-    (exceptionCaught [^ChannelHandlerContext ctx ^Throwable cause]
-      (.printSTackTrace cause)
-      (.close ctx))
-    (isSharable [] true)))
+      (>!! read-ch in))\
+      (channelInactive [^ChannelHandlerContext ctx]
+        ;; (reconnect ctx host port)
+        (reconnect ctx host port))
+      (exceptionCaught [^ChannelHandlerContext ctx ^Throwable cause]
+        (.printSTackTrace cause)
+        (.close ctx))
+      (isSharable [] true)))

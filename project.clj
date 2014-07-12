@@ -7,9 +7,8 @@
                  [io.netty/netty-all "4.0.19.Final"]
                  [org.clojure/core.async "0.1.303.0-886421-alpha"]
                  [cheshire "5.3.1"]
-                 [com.netflix.hystrix/hystrix-clj "1.4.0-RC4"]
                  [com.google.protobuf/protobuf-java "2.5.0"]]
-  :plugins [[lein-protobuf "0.4.1"]]
+  ;; :plugins [[lein-protobuf "0.4.1"]]
   :main clj-netty.core
   :aot [clj-netty.core]
   :java-source-paths ["src/jvm"])
