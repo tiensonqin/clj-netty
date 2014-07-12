@@ -36,17 +36,18 @@
       (.close ctx))
     (isSharable [] true)))
 
-(defn ^ChannelHandler client-handler [host port]
+(defn ^ChannelHandler client-handler
+  [host port]
   (proxy [SimpleChannelInboundHandler] []
     (channelActive [^ChannelHandlerContext ctx])
 
     (channelRead0 [^ChannelHandlerContext ctx ^Object in]
       ;; (prn "Client received: " in)
-      (>!! read-ch in))\
-      (channelInactive [^ChannelHandlerContext ctx]
-        ;; (reconnect ctx host port)
-        (reconnect ctx host port))
-      (exceptionCaught [^ChannelHandlerContext ctx ^Throwable cause]
-        (.printSTackTrace cause)
-        (.close ctx))
-      (isSharable [] true)))
+      (>!! read-ch in))
+    (channelInactive [^ChannelHandlerContext ctx]
+      ;; (reconnect ctx host port)
+      (reconnect ctx host port))
+    (exceptionCaught [^ChannelHandlerContext ctx ^Throwable cause]
+      (.printSTackTrace cause)
+      (.close ctx))
+    (isSharable [] true)))
