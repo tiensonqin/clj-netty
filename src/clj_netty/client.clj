@@ -5,7 +5,6 @@
             [clj-netty.handler :refer [client-handler]]
             [clj-netty.channel :refer :all]
             [clojure.core.async :refer [go chan >!! <!! <! >! alts!! timeout]]
-            [clojure.tools.nrepl :as handler]
             [cheshire.core :refer [parse-string generate-string]])
   (:import (io.netty.bootstrap Bootstrap)
            (io.netty.channel ChannelOption)
