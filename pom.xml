@@ -16,7 +16,7 @@
   <scm>
     <connection>scm:git:git://github.com/tiensonqin/clj-netty.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/tiensonqin/clj-netty.git</developerConnection>
-    <tag>c3f9e09978dc7ecd06fbd9267ce6b96d1eb80149
+    <tag>fc5d3acd614663c50cf603be74e648b1d03c9509
 </tag>
     <url>https://github.com/tiensonqin/clj-netty</url>
   </scm>
@@ -130,42 +130,6 @@
           <artifactId>clojure</artifactId>
         </exclusion>
       </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.thnetos</groupId>
-      <artifactId>cd-client</artifactId>
-      <version>0.3.6</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.clojure</groupId>
-      <artifactId>tools.trace</artifactId>
-      <version>0.7.6</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>slamhound</groupId>
-      <artifactId>slamhound</artifactId>
-      <version>1.5.5</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>criterium</groupId>
-      <artifactId>criterium</artifactId>
-      <version>0.4.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.stuartsierra</groupId>
-      <artifactId>class-diagram</artifactId>
-      <version>0.1.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.clojure</groupId>
-      <artifactId>tools.namespace</artifactId>
-      <version>0.2.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
